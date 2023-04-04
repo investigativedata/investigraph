@@ -3,6 +3,7 @@ etl pipeline, graphical explorer and general toolbox for investigations with fol
 
 ## components / child repositories
 - [investigraph-api](https://github.com/investigativedata/investigraph-api) - public API instance to use as a test playground
+- [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
 
 
 ## supported by
