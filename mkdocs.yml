@@ -1,0 +1,26 @@
+site_name: investigraph
+theme:
+  name: material
+  font:
+    text: Quicksand
+    code: Inconsolata
+  logo: img/logo.png
+  favicon: img/favicon.ico
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    # - navigation.footer
+    - toc.follow
+extra_css:
+  - stylesheets/extra.css
+extra:
+  social:
+    - icon: material/web
+      link: https://investigraph.vercel.app
+    - icon: material/mail
+      link: mailto:hi@investigativedata.org
+    - icon: material/slack
+      link: https://join.slack.com/t/investigativedata/shared_invite/zt-1ti4nojs7-GA_VKXowEbs5fWb7Ql9RqA
+    - icon: material/github
+      link: https://github.com/investigraph
