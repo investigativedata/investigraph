@@ -1,6 +1,10 @@
 # investigraph
 etl pipeline, graphical explorer and general toolbox for investigations with follow the money data
 
+## online documentation
+
+https://investigativedata.github.io/investigraph/
+
 ## what is this all about?
 
 **Research and implementation of an ETL process for a curated and up-to-date public and open-source data catalog of frequently used datasets in investigative journalism.**
@@ -24,6 +28,21 @@ The result is an ETL framework that allows research teams to build their own dat
 ## 3rd party contributions
 This project builds on top of great technology. Contributions to 3rd party libraries are listet below.
 
+## Rendering / static page
+
+This documentation can be rendered via [mkdocs](https://www.mkdocs.org/) using the [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) theme.
+
+Local developement:
+
+    pip install -r requirements.txt
+
+    mkdocs serve
+
+Follow the documentation at [mkdocs-material](https://squidfunk.github.io/mkdocs-material/getting-started/)
+
+### build
+
+    mkdocs build
 ## supported by
 [Media Tech Lab Bayern batch #3](https://github.com/media-tech-lab)
 
