@@ -1,4 +1,7 @@
 site_name: investigraph
+repo_url: https://github.com/investigativedata/investigraph
+docs_dir: src
+site_dir: docs
 theme:
   name: material
   font:
