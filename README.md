@@ -28,6 +28,9 @@ The result is an ETL framework that allows research teams to build their own dat
 ## 3rd party contributions
 This project builds on top of great technology. Contributions to 3rd party libraries are listet below.
 
+### nomenklatura
+- [Add optional dataset category and frequency metadata](https://github.com/opensanctions/nomenklatura/commit/ca6eab89c0a468f4dcb8b79045a7ccb9625787bd)
+
 ## Rendering / static page
 
 This documentation can be rendered via [mkdocs](https://www.mkdocs.org/) using the [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) theme.
