@@ -24,6 +24,7 @@ The result is an ETL framework that allows research teams to build their own dat
 - [investigraph-site](https://github.com/investigativedata/investigraph-site) - Landing page for investigraph (next.js app)
 - [investigraph-api](https://github.com/investigativedata/investigraph-api) - public API instance to use as a test playground
 - [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
+- [ftm-joy-ui](https://github.com/investigativedata/ftm-joy-ui/) - React components based on [Joy UI](https://mui.com/joy-ui/getting-started/overview/) for rendering [follow the money](https://followthemoney.tech) stuff
 - [ftmstore-fastapi](https://github.com/investigativedata/ftmstore-fastapi) - Lightweight API that exposes a ftm store to a public endpoint. Will be improved during this project.
 
 ## 3rd party contributions
