@@ -20,7 +20,7 @@ The result is an ETL framework that allows research teams to build their own dat
 
 ## github repositories
 - [investigraph](https://github.com/investigativedata/investigraph) - The meta repo from which this page is rendered
-- [investigraph-prefect](https://github.com/investigativedata/investigraph-prefect) - Trying out prefect.io for ftm pipeline processing
+- [investigraph-etl](https://github.com/investigativedata/investigraph-etl) - Trying out prefect.io for ftm pipeline processing
 - [investigraph-site](https://github.com/investigativedata/investigraph-site) - Landing page for investigraph (next.js app)
 - [investigraph-api](https://github.com/investigativedata/investigraph-api) - public API instance to use as a test playground
 - [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
