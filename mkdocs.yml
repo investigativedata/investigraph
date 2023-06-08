@@ -13,6 +13,7 @@ theme:
     - navigation.sections
     # - navigation.footer
     - toc.follow
+    - content.code.copy
 extra_css:
   - stylesheets/extra.css
 extra:
@@ -25,3 +26,11 @@ extra:
       link: https://join.slack.com/t/investigativedata/shared_invite/zt-1ti4nojs7-GA_VKXowEbs5fWb7Ql9RqA
     - icon: material/github
       link: https://github.com/investigraph
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

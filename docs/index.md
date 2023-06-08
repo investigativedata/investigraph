@@ -1,10 +1,8 @@
 # investigraph
 
-> etl pipeline, graphical explorer and general toolbox for investigations with follow the money data
-
-## goal
-
 **Research and implementation of an ETL process for a curated and up-to-date public and open-source data catalog of frequently used datasets in investigative journalism.**
+
+[Head over to the tutorial](/tutorial/)
 
 ## abstract
 
@@ -16,11 +14,12 @@ The result is an ETL framework that allows research teams to build their own dat
 - Creation of an own (internal) data catalog
 - Regular, automatic updates of the data
 - A growing community that makes more and more data sets accessible
-- Access to a public (open source) data catalog operated by "investigraph"
+- Access to a public (open source) data catalog operated by [investigativedata.io](https://investigativedata.io)
 
 ## github repositories
 - [investigraph](https://github.com/investigativedata/investigraph) - The meta repo from which this page is rendered
-- [investigraph-etl](https://github.com/investigativedata/investigraph-etl) - Trying out prefect.io for ftm pipeline processing
+- [investigraph-etl](https://github.com/investigativedata/investigraph-etl) - The main codebase for the etl pipeline framework based on prefect.io
+- [investigraph-datasets](https://github.com/investigativedata/investigraph-datasets) - Example datasets configuration
 - [investigraph-site](https://github.com/investigativedata/investigraph-site) - Landing page for investigraph (next.js app)
 - [investigraph-api](https://github.com/investigativedata/investigraph-api) - public API instance to use as a test playground
 - [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
