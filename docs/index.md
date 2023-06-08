@@ -2,7 +2,7 @@
 
 **Research and implementation of an ETL process for a curated and up-to-date public and open-source data catalog of frequently used datasets in investigative journalism.**
 
-[Head over to the tutorial](/tutorial/)
+[Head over to the tutorial](./tutorial/)
 
 ## abstract
 
