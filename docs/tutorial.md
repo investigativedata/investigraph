@@ -71,13 +71,13 @@ pipeline:
 
 **investigraph** allows to interactively inspect your building blocks for datasets, so let's try:
 
-    investigraph inspect ./datasets/gdh/config.yml
+    investigraph inspect ./datasets/gdho/config.yml
 
 This will show an error about no parsing function defined, but we will fix that later.
 
 We can inspect the outcome from our remote source as well:
 
-    investigraph inspect ./datasets/gdh/config.yml --extract
+    investigraph inspect ./datasets/gdho/config.yml --extract
 
 Ooops! This shows us a python exception saying something about `utf-8` error. Yeah, we still have that in 2023.
 
