@@ -136,9 +136,20 @@ Yay – it is returning some [ftm entities](/general/entity)
 In the source data is a lot more metadata about the organizations. Refer to the [ftm mapping documentation](https://docs.aleph.occrp.org/developers/mappings/) on how to map data. Let's add the organizations website to the `properties` key:
 
 ```yaml
-# ...
-website:
-  column: Website
+# metadata ...
+# pipeline ...
+mapping:
+  queries:
+    - entities:
+        org:
+          schema: Organization
+          keys:
+            - Id
+          properties:
+            name:
+              column: Name
+            website:
+              column: Website
 ```
 
 Inspect again, and the entities now have the `website` property.
