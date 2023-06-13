@@ -1,5 +1,19 @@
 site_name: investigraph
+site_url: https://investigativedata.github.io/investigraph/
 repo_url: https://github.com/investigativedata/investigraph
+nav:
+  - Overview: index.md
+  - Tutorial: tutorial.md
+  - Concepts:
+    - concepts/catalog.md
+    - concepts/dataset.md
+    - concepts/entity.md
+  - Deployment:
+    - deployment/docker.md
+  - Stack:
+    - stack/followthemoney.md
+    - stack/prefect.md
+    - stack/nomenklatura.md
 theme:
   name: material
   font:

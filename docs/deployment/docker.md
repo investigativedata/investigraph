@@ -1,4 +1,4 @@
-# docker setup
+# Docker
 
 For production usage, use the docker build and a persistent cache and database (aka [redis](https://redis.io) and [postgres](postgresql.org/)).
 
@@ -6,7 +6,7 @@ This allows to deploy the prefect server (and ui) seperated from one or more age
 
 [investigraph docker image](https://github.com/investigativedata/investigraph-etl/pkgs/container/investigraph)
 
-## environment
+## Environment
 
 Example settings for production, using postgres and redis:
 
@@ -19,7 +19,7 @@ REDIS_URL=redis://redis:6379
 
 Store this as a file to use as `env_file` within compose.
 
-## example compose
+## Example docker-compose.yml
 
 This is a minimal production example using dedicated redis cache and persistent postgres database. Note that (as in the environment settings above) [ftmstore](https://github.com/alephdata/followthemoney-store) and prefect.io share the same database instance.
 

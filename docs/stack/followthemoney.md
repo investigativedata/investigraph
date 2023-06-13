@@ -6,9 +6,9 @@ FtM is developed by the [Organized Crime and Corruption Project (OCCRP)](https:/
 
 FtM can be used in three contexts: as a *command-line utility*, a *Python library*, and as a *TypeScript/JavaScript* library. The ontology defined by FtM also includes a model for various types of documents that might be used as evidence in investigations.
 
-**investigraph** uses FtM to model and parse [entities](/general/entity).
+**investigraph** uses FtM to model and parse [entities](../../concepts/entity).
 
-## resources
+## Resources
 
 - [online documentation](https://followthemoney.tech)
 - [github repository](https://github.com/alephdata/followthemoney)

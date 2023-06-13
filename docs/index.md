@@ -1,10 +1,10 @@
-# investigraph
+# Investigraph
 
 **Research and implementation of an ETL process for a curated and up-to-date public and open-source data catalog of frequently used datasets in investigative journalism.**
 
 [Head over to the tutorial](./tutorial/)
 
-## abstract
+## Abstract
 
 The result is an ETL framework that allows research teams to build their own data catalog themselves as easily as possible and without much coding, and to incrementally update the individual datasets (e.g., through automated web scraping). This process (data import & update) should be possible without programming knowledge, by means of a frontend. However, it cannot be ruled out that for the 1st step (extraction) of an ETL pipeline for a given dataset, some coding is still needed, as each source is individual and may require special parsing. This will be partially addressed by a util library that provides adapters for common data inputs (json, csv, web-api).
 
@@ -16,7 +16,7 @@ The result is an ETL framework that allows research teams to build their own dat
 - A growing community that makes more and more data sets accessible
 - Access to a public (open source) data catalog operated by [investigativedata.io](https://investigativedata.io)
 
-## github repositories
+## Github repositories
 - [investigraph](https://github.com/investigativedata/investigraph) - The meta repo from which this page is rendered
 - [investigraph-etl](https://github.com/investigativedata/investigraph-etl) - The main codebase for the etl pipeline framework based on prefect.io
 - [investigraph-datasets](https://github.com/investigativedata/investigraph-datasets) - Example datasets configuration
@@ -25,7 +25,7 @@ The result is an ETL framework that allows research teams to build their own dat
 - [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
 - [ftmstore-fastapi](https://github.com/investigativedata/ftmstore-fastapi) - Lightweight API that exposes a ftm store to a public endpoint.
 
-## supported by
+## Supported by
 [Media Tech Lab Bayern batch #3](https://github.com/media-tech-lab)
 
 <a href="https://www.media-lab.de/en/programs/media-tech-lab">

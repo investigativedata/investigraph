@@ -1,12 +1,12 @@
 # Tutorial
 
-**investigraph** tries to automatize as many functionality (scheduling and executing workflows, monitoring, configuration, ...) as possible with the help of [prefect.io](/stack/prefect).
+**investigraph** tries to automatize as many functionality (scheduling and executing workflows, monitoring, configuration, ...) as possible with the help of [prefect.io](../stack/prefect/).
 
 The only thing you have to manage by yourself is the **dataset configuration**, which, in the easiest scenario, is just a `YAML` file that contains a bit of metadata and pipeline instructions.
 
 The following tutorial is a simple setup on your local machine and only requires recent python >= 3.10.
 
-## 1. installation
+## 1. Installation
 
 It is highly recommended to use a [python virtual environment](https://learnpython.com/blog/how-to-use-virtualenv-python/) for installation.
 
@@ -17,11 +17,11 @@ After completion, verify that **investigraph** is installed:
     investigraph --help
 
 
-## 2. create a dataset definition
+## 2. Create a dataset definition
 
 Let's start with a simple, public available dataset: [The Global Databse of Humanitarian Organisations](https://www.humanitarianoutcomes.org/gdho/search). It's just a list of, yes, humanitarian organisations.
 
-### metadata
+### Metadata
 
 Every dataset needs a unique identifier as a sub-folder in our block, let's use `gdho`. We will reference this dataset always with this identifier.
 
@@ -45,7 +45,7 @@ publisher:
 
 That's enough metadata for now, there is a lot more metadata possible which will be covered in the documentation.
 
-### sources
+### Sources
 
 The most interesting part of course is the pipeline definition! We have at least to provide a source:
 
@@ -100,7 +100,7 @@ Now **investigraph** is able to fetch and parse the csv source:
 
     investigraph inspect ./datasets/gdho/config.yml --extract
 
-### transform data
+### Transform data
 
 This is the core functionality of this whole thing: Transform extracted source data into the [followthemoney](https://followthemoney.tech) model.
 
@@ -131,7 +131,7 @@ You can inspect the transformation like this:
 
     investigraph inspect datasets/gdho/config.yml --transform
 
-Yay – it is returning some [ftm entities](/general/entity)
+Yay – it is returning some [ftm entities](../concepts/entity)
 
 In the source data is a lot more metadata about the organizations. Refer to the [ftm mapping documentation](https://docs.aleph.occrp.org/developers/mappings/) on how to map data. Let's add the organizations website to the `properties` key:
 
@@ -154,9 +154,9 @@ mapping:
 
 Inspect again, and the entities now have the `website` property.
 
-### the complete config.yml
+### The complete config.yml
 
-Adding in a bit more metadata and mapping:
+Adding in a bit more metadata and property mappings:
 
 ```yaml
 name: gdho
@@ -214,7 +214,7 @@ mapping:
                 - Religion
 ```
 
-## 3. run the pipeline
+## 3. Run the pipeline
 
 To actually run the pipeline within the **investigraph framework** (which is based on prefect.io), execute a flow run:
 
@@ -222,7 +222,7 @@ To actually run the pipeline within the **investigraph framework** (which is bas
 
 Voilà, you just transformed the whole gdho database into ftm entities! You may notice, that this execution created a new subfolder in the current working directory named `data/gdho` where you find the data output of this process.
 
-## the prefect ui
+## The prefect ui
 
 Start the local prefect server:
 
@@ -246,7 +246,7 @@ You can click on the deployment, and then click on "Run >" at the upper right co
 
 In the options, insert `gdho` as the dataset and `./datasets/gdho/config.yml` as the value for the config. Then click "Run" and watch the magic happen.
 
-## optional: dataset configuration discovery
+## Optional: dataset configuration discovery
 
 We use [prefect blocks](https://docs.prefect.io/2.10.11/concepts/blocks/) to store datasets configuration. Using blocks allows **investigraph** to discover dataset configuration (and even parsing code) *everywhere* on the cloud, but let's start locally for now.
 
@@ -262,7 +262,7 @@ Or reference this block when triggering a flow run via the prefect ui (no need t
 
 Of course, these blocks can be created via the prefect ui as well: [http://127.0.0.1:4200/blocks](http://127.0.0.1:4200/blocks)
 
-### github block
+### Github block
 
 **investigraph** maintains an example [github repository](https://github.com/investigativedata/investigraph-datasets) to use as a block to fetch the dataset configs remotely. Create a github block via the prefect ui or via command line:
 
@@ -272,7 +272,7 @@ Now, you can use this block when running flows (via the ui) or command line:
 
     investigraph run gdho -b github/investigraph-datasets
 
-## optional: use python code to transform data
+## Optional: use python code to transform data
 
 Instead of writting the ftm mapping in the `config.yml`, which can be a bit limiting for advanced use cases, you can instead write arbitray python code. By convention, the code lives next to the config file in a script called `parse.py` which needs a function called `parse`. This function takes 2 parameters: A flow run context and an extracted record from the source.
 
