@@ -8,6 +8,10 @@ nav:
     - concepts/catalog.md
     - concepts/dataset.md
     - concepts/entity.md
+  - Documentation:
+    - reference/index.md
+    - reference/config.md
+    - reference/parse.md
   - Deployment:
     - deployment/docker.md
   - Stack:
