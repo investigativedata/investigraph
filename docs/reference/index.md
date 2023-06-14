@@ -183,7 +183,7 @@ The util function `make_proxy` creates an [entity](../concepts/entity/), which i
 
 Then following the [ftm python api](https://followthemoney.tech/docs/api/), properties can be added via `proxy.add(<prop>, <value>)`
 
-See [parse](./parse/) for a more complete reference.
+See [parse.py](./parse/) for a more complete reference.
 
 ### Inspecting transform stage
 
@@ -193,6 +193,28 @@ To iteratively test your configuration, you can use `investigraph inspect` to se
 
 This will output the first few mappend [entities](../concepts/entity/).
 
+### Aggregation
+
+One essential feature from the underlying [followthemoney toolkit](../stack/followthemoney/) is the so called "entity fragmentation". This means, pipelines can output *partial* data for a given entity and later merge them together. For example, if one data source has information about a `Person`s birth date, and another has information about the nationality of this person, the two different pipelines would produce two different fragments of the same [entity](../concepts/entity/) that are aggregated at a later stage. [Read more about the technical details here.](https://followthemoney.tech/docs/fragments/)
+
+Aggregation can happen in memory (per default) or via iterating through a sql database (if the complete data doesn't fit into the machines memory). When outputting to a `postgresql`-backed [ftm store](https://github.com/alephdata/followthemoney-store), entity fragments are merged on write, so no aggregation is needed. **investigraph** will automatically detect if you are using a postgresql endpoint and skip the aggregation stage in this case.
+
+To disable aggregation, set the flag in the prefect ui when starting a flow, or specify via command-line:
+
+    investigraph run <dataset> --no-aggregate
+
+#### Fragments uri
+
+investigraph has to store the intermediate entity fragments somewhere before merging them into entities in the last step. Per default, fragments are written to local files, but if you are using a decentralized setup where several agents are emitting fragments, you should specify a remote uri for it:
+
+    investigraph run <datasets> --fragments-uri s3://my_bucket/<dataset>/fragments.json
+
+This can as well be defined in the datasets [`config.yml`](./config/):
+
+```yaml
+# other metadata
+fragments_uri: sftp://username:password@host/<dataset>/index.json
+```
 
 ## Load
 
