@@ -2,6 +2,8 @@
 
 For production usage, use the docker build and a persistent cache and database (aka [redis](https://redis.io) and [postgres](postgresql.org/)).
 
+[Read more about services overview](../services/)
+
 This allows to deploy the prefect server (and ui) seperated from one or more agents. Server and agent use the same image but with a different entrypoint.
 
 [investigraph docker image](https://github.com/investigativedata/investigraph-etl/pkgs/container/investigraph)

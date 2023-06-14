@@ -10,7 +10,7 @@ The following tutorial is a simple setup on your local machine and only requires
 
 It is highly recommended to use a [python virtual environment](https://learnpython.com/blog/how-to-use-virtualenv-python/) for installation.
 
-    pip install git+https://github.com/investigativedata/investigraph-etl.git
+    pip install investigraph
 
 After completion, verify that **investigraph** is installed:
 
