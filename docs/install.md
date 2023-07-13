@@ -10,6 +10,10 @@ investigraph ships as a python package and can easily be installed via pip (or a
 
     pip install investigraph
 
+Or, e.g. when using [poetry](https://python-poetry.org/):
+
+    poetry add investigraph
+
 After installation and all it's dependencies, check that it is working:
 
     investigraph --version

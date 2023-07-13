@@ -1,10 +1,10 @@
 # config.yml
 
-The main entry point for a specific [dataset](../../concepts/dataset/) configuration. This file should be placed within a [block](https://docs.prefect.io/2.10.11/concepts/blocks/) under a subfolder named by the dataset, e.g.: `./path-to-datasets/<dataset>/config.yml`
+The main entry point for a specific [dataset](../../concepts/dataset/) configuration. This file should be placed within a [block](https://docs.prefect.io/latest/concepts/blocks/) under a subfolder named by the dataset, e.g.: `./path-to-datasets/<dataset>/config.yml`
 
 When not using blocks (as for local developement), any arbitrary config files can be referenced to use via [command line](../cli/):
 
-    investigraph run <dataset> -c ./path/to/config/file.yml
+    investigraph run -c ./path/to/config/file.yml
 
 ## Reference
 
@@ -90,9 +90,92 @@ publisher:
 
 Default: `None`
 
-### Pipeline
+### Extract stage
 
-### Mapping
+Configuration for the extraction stage, for fetching sources and extracting records to transform in the next stage.
+
+```yaml
+extract:
+  # ...
+```
+
+#### `extract.sources`
+
+[See sources](../#source)
+
+#### `extract.handler`
+
+Reference to the python function that handles this stage.
+
+Default: `investigraph.logic.extract:handle`
+
+When using your own extractor, you can disable source fetching by investigraph, instead fetch (and extract) your sources within your own code:
+
+```
+extract:
+  handler: ./extract.py:handle
+  fetch: false
+```
+
+Or, a python module (must be in `PYTHONPATH`)
+
+```
+extract:
+  handler: my_module.extractors:json
+```
+
+### Transform
+
+Configuration for the transformation stage, for defining a [FollowTheMoney mapping](../stack/followthemoney/) or referencing custom transformation code. When a custom handler is defined, the query mapping is ignored.
+
+```yaml
+transform:
+  handler: ./transform.py:handle
+  queries:
+    - entities:
+    # ...
+```
+
+### Load
+
+The final stage that loads the transformed [Entities](../concepts/entity/) into defined targets.
+
+```yaml
+load:
+  # ...
+```
+
+#### `load.index_uri`
+
+Uri to output dataset metadata. Can be anything that `smart_open` understands.
+
+**Example**: s3://<bucket-name>/<dataset-name>/index.json
+
+**Default**: ./data/<dataset-name>/index.json
+
+#### `load.entities_uri`
+
+Uri to output transformed entities. Can be anything that `smart_open` understands, plus a `SQL` endpoint (for use with [followthemoney-store](https://github.com/alephdata/followthemoney-store))
+
+**Example**:
+
+- s3://<bucket-name>/<dataset-name>/entities.ftm.json
+- postgresql://user:password@host:port/database
+
+**Default**: ./data/<dataset-name>/entities.ftm.json
+
+#### `load.fragments_uri`
+
+Uri to output intermediate entity fragments. Can be anything that `smart_open` understands.
+
+**Example**: s3://<bucket-name>/<dataset-name>/fragments.json
+
+**Default**: ./data/<dataset-name>/fragments.json
+
+#### `load.aggregate`
+
+Specify if entities should be aggregated, default: `true`
+
 
 ## A complete example
 
@@ -122,17 +205,14 @@ publisher:
   url: https://www.humanitarianoutcomes.org
 
 
-index_uri: s3://s3.investigativedata.org@data.ftm.store/investigraph/gdho/index.json
-entities_uri: s3://s3.investigativedata.org@data.ftm.store/investigraph/gdho/entities.ftm.json
-
-pipeline:
+extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
       extract_kwargs:
         encoding: latin
         skiprows: 1
 
-mapping:
+transform:
   queries:
     - entities:
         org:
@@ -159,4 +239,8 @@ mapping:
                 - Sector
                 - Religious or secular
                 - Religion
+
+load:
+  index_uri: s3://s3.investigativedata.org@data.ftm.store/investigraph/gdho/index.json
+  entities_uri: s3://s3.investigativedata.org@data.ftm.store/investigraph/gdho/entities.ftm.json
 ```

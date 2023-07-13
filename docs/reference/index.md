@@ -14,6 +14,8 @@ Most of the running behaviour of a specific [pipeline](../concepts/pipeline) is 
 
 In the first step of a pipeline, we focus on getting one or more data sources and extracting data records from them that will eventually be passed to the [next stage](#transform).
 
+This stage is configured via the `extract` key within the `config.yml`
+
 ### Source
 
 A data source is defined by a `uri`. As investigraph is using [smart_open](https://github.com/RaRe-Technologies/smart_open) under the hood, this `uri` can be anything from a local file path to a remote s3 resource.
@@ -39,14 +41,14 @@ file:///home/user/file.csv.bz2
 [ssh|scp|sftp]://username:password@host/path/file.csv
 ```
 
-A pipeline can have more than one source and is defined in the [`config.yml`](./config/) within the `pipeline.sources` key. This can either be just a list of one or more `uri`s or of more complex source objects.
+And, of course, just `http[s]://...`
+
+A pipeline can have more than one source and is defined in the [`config.yml`](./config/) within the `extract.sources` key. This can either be just a list of one or more `uri`s or of more complex source objects.
 
 #### String source
 
 ```yaml
-name: gdho
-
-pipeline:
+extract:
   sources:
     - https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
 ```
@@ -59,12 +61,10 @@ As seen in the [tutorial](../tutorial/), this source has actually encoding probl
 
 For extracting tabular sources, investigraph uses [pandas](https://pandas.pydata.org/) under the hood. This library has a lot of options on how to read in data, and within our `config.yml` we can just pass any arbitrary argument to [`pandas.read_csv`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv) or [`pandas.read_excel`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html#pandas-read-excel). (investigraph is picking the right function based on the sources mimetype.)
 
-Just put the required arguments in the config key `pipeline.sources[].extract_kwargs`, in this case (see tutorial) like this:
+Just put the required arguments in the config key `extract.sources[].extract_kwargs`, in this case (see tutorial) like this:
 
 ```yaml
-name: gdho
-
-pipeline:
+extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
       extract_kwargs:
@@ -83,9 +83,7 @@ pandas.read_csv(uri, encoding="latin", skiprows=1)
 You can give a name (or identifier) to the source to be able to identify in your code from which source the generated records are coming from, e.g. to adjust a parsing function based on the source file.
 
 ```yaml
-name: ec_meetings
-
-pipeline:
+extract:
   sources:
     - name: ec_juncker
       uri: https://ec.europa.eu/transparencyinitiative/meetings/dataxlsx.do?name=meetingscommissionrepresentatives1419
@@ -98,6 +96,32 @@ pipeline:
 ```
 
 This helps us for the [next stage](#transform) (see below) to distinguish between different sources and adjust our parsing code to it.
+
+### Bring your own code
+
+When using a custom handler that handles the fetch & extraction logic, disable the fetch logic from **investigraph** and specify the custom script (or module):
+
+```yaml
+extract:
+  fetch: false
+  handler: ./myscript.py:extract
+```
+
+This function has to yield a `dict[str, Any]` for each record that should be passed to the next stage:
+
+```python
+import csv
+import requests
+from io import StringIO
+from typing import Any, Generator
+from investigraph.model import Context
+
+def extract(ctx: Context) -> Generator[dict[str, Any], None, None]:
+    res = requests.get(ctx.source.uri)
+    yield from csv.DictReader(StringIO(res.text))
+```
+
+For more information about how to include custom code, see the relevant section in the [transform](#transform) stage.
 
 ### Inspecting sources
 
@@ -115,16 +139,14 @@ Or, to output the first few records as `json`:
 
 As outlined, **investigraph** tries to automatize everything *around* this stage. That's because transforming any arbitrary source data into [ftm entities](../concepts/entity/) is very dependant on the actual dataset.
 
-Still, for simple use cases, you don't need to write any `python code` here at all. Just define a *mapping*. For more complex scenarios, write your own `parse` function.
+Still, for simple use cases, you don't need to write any `python code` here at all. Just define a *mapping*. For more complex scenarios, write your own `transform` function.
 
 ### Mapping
 
 Simply plug in a standardized ftm mapping (as [described here](https://followthemoney.tech/docs/mappings/#mappings)) into your pipeline configuration under the root key `mapping`:
 
 ```yaml
-name: gdho
-
-mapping:
+transform:
   queries:
     - entities:
         org:
@@ -143,16 +165,34 @@ As it follows the mapping specification from [Follow The Money](../stack/followt
 
 Please refer to the [aleph documentation](https://docs.aleph.occrp.org/developers/mappings/) for more details about mappings.
 
-When the config key `mapping` is specified in `config.yml`, investigraph will always use that mapping even if you have a custom `parse.py` as well. Make sure to not have a `mapping` key defined (or comment it out) if you want a custom `parse.py`.
-
-### parse.py
+### Bring your own code
 
 For more complex transforming operations, just write your own code. As described, one of the main values of **investigraph** is that you only have to write this one python file for a dataset, everything else is handled automatically.
 
-By convention (and this is currently hard-coded) the file named `parse.py` has to live in the same folder as `config.yml` and needs to contain at least a function named `parse` with this signature:
+In the `<stage>.handler` key, you can either refer to a python function via it's module path, or to a file path to a python script containing the function. In that case, by convention the python files should be named after their stages (`extract.py`, `transform.py`, `load.py`) and live in the same directory as the `config.yml`.
+
+#### Refer a function from a module
+
+The module must be within the current `PYTHONPATH` at runtime.
+
+```yaml
+transform:
+    handler: my_library.transformers:wrangle
+```
+
+#### Refer a function from a local python script file
+
+This file must be locally accessible on the running host. This can be achieved via prefect blocks.
+
+```yaml
+transform:
+    handler: ./transform.py:handle
+```
+
+The entrypoint function for the **transform stage** has the following signature:
 
 ```python
-def parse(ctx: investigraph.model.Context, data: dict[str, typing.Any]) -> typing.Generator[nomenklatura.entity.CE, None, None]:
+def handle(ctx: investigraph.model.Context, data: dict[str, typing.Any], ix: int) -> typing.Generator[nomenklatura.entity.CE, None, None]:
     # transform `data` into one or more entities ...
     yield proxy
 ```
@@ -166,13 +206,13 @@ Ok. Let's break this down.
 
 `data` is the current extracted record.
 
-An actual `parse.py` for the `gdho` dataset could look like this:
+`ix` is an integer of the index of the current record.
+
+An actual `transform.py` for the `gdho` dataset could look like this:
 
 ```python
-from investigraph.util import make_proxy
-
-def parse(ctx, record)
-    proxy = make_proxy("Organization")
+def parse(ctx, record, ix):
+    proxy = ctx.make_proxy("Organization")
     proxy.id = record.pop("Id"))
     proxy.add("name", record.pop("Name"))
     # add more property data ...
@@ -182,8 +222,6 @@ def parse(ctx, record)
 The util function `make_proxy` creates an [entity](../concepts/entity/), which is implemented in `nomenklatura.entity.CompositeEntity`, with the schema "Organization".
 
 Then following the [ftm python api](https://followthemoney.tech/docs/api/), properties can be added via `proxy.add(<prop>, <value>)`
-
-See [parse.py](./parse/) for a more complete reference.
 
 ### Inspecting transform stage
 
@@ -201,19 +239,19 @@ Aggregation can happen in memory (per default) or via iterating through a sql da
 
 To disable aggregation, set the flag in the prefect ui when starting a flow, or specify via command-line:
 
-    investigraph run <dataset> --no-aggregate
+    investigraph run ... --no-aggregate
 
 #### Fragments uri
 
 investigraph has to store the intermediate entity fragments somewhere before merging them into entities in the last step. Per default, fragments are written to local files, but if you are using a decentralized setup where several agents are emitting fragments, you should specify a remote uri for it:
 
-    investigraph run <datasets> --fragments-uri s3://my_bucket/<dataset>/fragments.json
+    investigraph run ... --fragments-uri s3://my_bucket/<dataset>/fragments.json
 
 This can as well be defined in the datasets [`config.yml`](./config/):
 
 ```yaml
-# other metadata
-fragments_uri: sftp://username:password@host/<dataset>/index.json
+load:
+  fragments_uri: sftp://username:password@host/<dataset>/index.json
 ```
 
 ## Load
@@ -229,13 +267,13 @@ Location for the resulting [dataset metadata](../concepts/dataset/), typically c
 **config.yml**
 
 ```yaml
-# metadata ...
-index_uri: s3://my_bucket/<dataset>/index.json
+load:
+  index_uri: s3://my_bucket/<dataset>/index.json
 ```
 
 **command line**
 
-    investigraph run <dataset> --index-uri sftp://username:password@host/<dataset>/index.json
+    investigraph run ... --index-uri sftp://username:password@host/<dataset>/index.json
 
 ### Entities
 
@@ -246,25 +284,25 @@ As a convention, entity json files should use the extension `.ftm.json`
 **config.yml**
 
 ```yaml
-# metadata ...
-index_uri: s3://my_bucket/<dataset>/entities.ftm.json
+load:
+  entities_uri: s3://my_bucket/<dataset>/entities.ftm.json
 ```
 
 write to a ftm store:
 
 ```yaml
-# metadata ...
-entities_uri: sqlite:///followthemoney.store
+load:
+  entities_uri: sqlite:///followthemoney.store
 ```
 
 Sqlite is only suitable for developing or small local deployments, beter use a proper sql database that allows concurrent writes:
 
 ```yaml
-# metadata ...
-entities_uri: postgresql://user:password@host:port/database
+load:
+  entities_uri: postgresql://user:password@host:port/database
 ```
 
 **command line**
 
-    investigraph run <dataset> --entities-uri ...
+    investigraph run ... --entities-uri ...
 

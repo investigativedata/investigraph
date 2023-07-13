@@ -8,7 +8,7 @@ The use case for deploying investigraph as outlined here is a decentralized, mul
 
 ## Prefect server
 
-The prefect server manages workflow runs and state. It as well serves a user interface for configuration, adding [blocks](https://docs.prefect.io/2.10.11/concepts/blocks/) and scheduling workflows. After [installing investigraph](../../install), you can spin up the server locally via
+The prefect server manages workflow runs and state. It as well serves a user interface for configuration, adding [blocks](https://docs.prefect.io/latest/concepts/blocks/) and scheduling workflows. After [installing investigraph](../../install), you can spin up the server locally via
 
     prefect server start
 
@@ -18,7 +18,7 @@ The [investigraph docker image](https://github.com/investigativedata/investigrap
 
     docker run ghcr.io/investigativedata/investigraph
 
-[More about server via prefect.io documentation](https://docs.prefect.io/2.10.11/host/)
+[More about server via prefect.io documentation](https://docs.prefect.io/latest/host/)
 
 ## Prefect agent
 
@@ -28,7 +28,7 @@ investigraph needs one or several agents that will execute the workflows orchest
 
 where `-q` defines the queue to use (see prefect.io documentation)
 
-These agents don't have access to local data located in the server. That's why in a distributed deployment investigraph is using [blocks](https://docs.prefect.io/2.10.11/concepts/blocks/) to store dataset configuration.
+These agents don't have access to local data located in the server. That's why in a distributed deployment investigraph is using [blocks](https://docs.prefect.io/latest/concepts/blocks/) to store dataset configuration.
 
 If you still want to access local data in your environment, make sure that the agent has access to the directories, or, in a docker deployment, ensure the correct volume mounts.
 
@@ -36,7 +36,7 @@ The agent needs to know which server api to use which is controlled via the env 
 
     PREFECT_API_URL=http://my.prefect.server/api prefect agent start -q "other-queue"
 
-[More about agents via prefect.io documentation](https://docs.prefect.io/2.10.11/concepts/work-pools/)
+[More about agents via prefect.io documentation](https://docs.prefect.io/latest/concepts/work-pools/)
 
 ## Database
 

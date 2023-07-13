@@ -51,7 +51,7 @@ The most interesting part of course is the pipeline definition! We have at least
 
 ```yaml
 # metadata ...
-pipeline:
+extract:
   sources:
     - uri: <url>
 ```
@@ -64,7 +64,7 @@ We can just add this url to our source configuration:
 
 ```yaml
 # metadata ...
-pipeline:
+extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
 ```
@@ -88,7 +88,7 @@ Under the hood, **investigraph** is using [pandas.read_csv](https://pandas.pydat
 
 ```yaml
 # metadata ...
-pipeline:
+extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
       extract_kwargs:
@@ -114,8 +114,8 @@ Add this mapping spec to the `config.yml` (the csv column with the name is calle
 
 ```yaml
 # metadata ...
-# pipeline ...
-mapping:
+# extract ...
+transform:
   queries:
     - entities:
         org:
@@ -137,8 +137,8 @@ In the source data is a lot more metadata about the organizations. Refer to the 
 
 ```yaml
 # metadata ...
-# pipeline ...
-mapping:
+# extract ...
+transform:
   queries:
     - entities:
         org:
@@ -177,14 +177,14 @@ publisher:
     governments.
   url: https://www.humanitarianoutcomes.org
 
-pipeline:
+extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
       extract_kwargs:
         encoding: latin
         skiprows: 1
 
-mapping:
+transform:
   queries:
     - entities:
         org:
@@ -218,7 +218,7 @@ mapping:
 
 To actually run the pipeline within the **investigraph framework** (which is based on prefect.io), execute a flow run:
 
-    investigraph run gdho -c datasets/gdho/config.yml
+    investigraph run -c datasets/gdho/config.yml
 
 Voilà, you just transformed the whole gdho database into ftm entities! You may notice, that this execution created a new subfolder in the current working directory named `data/gdho` where you find the data output of this process.
 
@@ -236,7 +236,7 @@ View the dashboard at [http://127.0.0.1:4200](http://127.0.0.1:4200)
 
 There you will already see our recent flow run for the `gdho` dataset.
 
-To be able to run flows from within the ui, we first need to create (and apply) a [deployment](https://docs.prefect.io/2.10.11/concepts/deployments/):
+To be able to run flows from within the ui, we first need to create (and apply) a [deployment](https://docs.prefect.io/latest/concepts/deployments/):
 
     prefect deployment build investigraph.pipeline:run -n investigraph-local -a
 
@@ -248,7 +248,7 @@ In the options, insert `gdho` as the dataset and `./datasets/gdho/config.yml` as
 
 ## Optional: dataset configuration discovery
 
-We use [prefect blocks](https://docs.prefect.io/2.10.11/concepts/blocks/) to store datasets configuration. Using blocks allows **investigraph** to discover dataset configuration (and even parsing code) *everywhere* on the cloud, but let's start locally for now.
+We use [prefect blocks](https://docs.prefect.io/latest/concepts/blocks/) to store datasets configuration. Using blocks allows **investigraph** to discover dataset configuration (and even parsing code) *everywhere* on the cloud, but let's start locally for now.
 
 Register your local datasets folder as a `LocalFileSystem`-Block in prefect:
 
@@ -256,7 +256,7 @@ Register your local datasets folder as a `LocalFileSystem`-Block in prefect:
 
 From now on, you can reference this block storage with its name `local-file-system/datasets`, e.g. when running the pipeline:
 
-    investigraph run gdho -b local-file-system/datasets
+    investigraph run -d gdho -b local-file-system/datasets
 
 Or reference this block when triggering a flow run via the prefect ui (no need to put in a config path then anymore.)
 
@@ -274,22 +274,28 @@ Now, you can use this block when running flows (via the ui) or command line:
 
 ## Optional: use python code to transform data
 
-Instead of writting the ftm mapping in the `config.yml`, which can be a bit limiting for advanced use cases, you can instead write arbitray python code. By convention, the code lives next to the config file in a script called `parse.py` which needs a function called `parse`. This function takes 2 parameters: A flow run context and an extracted record from the source.
+Instead of writting the ftm mapping in the `config.yml`, which can be a bit limiting for advanced use cases, you can instead write arbitray python code. The code needs to live anywhere relatively to the `config.yml`, e.g. next to it in a file `etl.py`. In it, write your own transform (or extract, load) function.
 
 To transform the records within python and achieve the same result for the `gdho` dataset, an example script would look like this:
 
 ```python
-from investigraph.util import make_proxy
-
-def parse(ctx, record)
-    proxy = make_proxy("Organization")
+def transform(ctx, record, ix):
+    proxy = ctx.make_proxy("Organization")
     proxy.id = record.pop("Id"))
     proxy.add("name", record.pop("Name"))
     # add more property data ...
     yield proxy
 ```
 
-Now, remove the `mapping` key from the `config.yml` to implicitly tell **investigraph** to use this python script instead.
+Now, tell the `transform` key in the `config.yml` to use this python file instead of the defined mapping:
+
+```yaml
+# metadata ...
+# extract ...
+transform:
+  queries: # ...
+  handler: ./etl.py:transform
+```
 
 After it, test the pipeline again:
 

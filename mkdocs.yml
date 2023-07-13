@@ -11,9 +11,12 @@ nav:
     - concepts/entity.md
   - Documentation:
     - reference/index.md
-    - reference/cli.md
     - reference/config.md
-    - reference/parse.md
+    - reference/cli.md
+    - reference/extract.md
+    - reference/transform.md
+    - reference/load.md
+    - reference/settings.md
   - Deployment:
     - deployment/services.md
     - deployment/docker.md
