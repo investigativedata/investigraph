@@ -33,7 +33,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v3
       - name: Build with mkdocs
-        run: mkdocs build
+        run: make
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:

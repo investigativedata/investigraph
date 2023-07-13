@@ -24,6 +24,8 @@ nav:
     - stack/followthemoney.md
     - stack/prefect.md
     - stack/nomenklatura.md
+  - Updates:
+    - changelogs/investigraph-etl.md
 theme:
   name: material
   font:
