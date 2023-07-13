@@ -1,3 +1,5 @@
+[![Deploy mkdocs site to Pages](https://github.com/investigativedata/investigraph/actions/workflows/build.yml/badge.svg)](https://github.com/investigativedata/investigraph/actions/workflows/build.yml)
+
 # investigraph
 etl pipeline, graphical explorer and general toolbox for investigations with follow the money data
 
@@ -48,7 +50,7 @@ Follow the documentation at [mkdocs-material](https://squidfunk.github.io/mkdocs
 ### build
 
     mkdocs build
-    
+
 ## supported by
 [Media Tech Lab Bayern batch #3](https://github.com/media-tech-lab)
 
