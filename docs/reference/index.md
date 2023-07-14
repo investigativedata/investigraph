@@ -45,19 +45,19 @@ And, of course, just `http[s]://...`
 
 A pipeline can have more than one source and is defined in the [`config.yml`](./config/) within the `extract.sources` key. This can either be just a list of one or more `uri`s or of more complex source objects.
 
-#### String source
+#### Simple source
 
 ```yaml
 extract:
   sources:
-    - https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
+    - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
 ```
 
 This tells the pipeline to fetch the output from the given url without any more logic.
 
 As seen in the [tutorial](../tutorial/), this source has actually encoding problems and we want to skip the first line. So we need to give investigraph a bit more information on how to extract this source.
 
-#### Object source
+#### More configurable source
 
 For extracting tabular sources, investigraph uses [pandas](https://pandas.pydata.org/) under the hood. This library has a lot of options on how to read in data, and within our `config.yml` we can just pass any arbitrary argument to [`pandas.read_csv`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv) or [`pandas.read_excel`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html#pandas-read-excel). (investigraph is picking the right function based on the sources mimetype.)
 
