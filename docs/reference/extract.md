@@ -22,7 +22,7 @@ import csv
 from io import StringIO
 from typing import Any, Generator
 
-from investigraph.model.context import Context
+from investigraph.model import Context
 from investigraph.model.source import TResponse
 
 def handle(ctx: Context, res: TResponse) -> Generator[dict[str, Any], None, None]:

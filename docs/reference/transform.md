@@ -14,11 +14,12 @@ transform:
 #### transform.py
 
 ```python
-from typing import Any
+from typing import Any, Generator
+from nomenklatura.entity import CE
 
 from investigraph.model import Context
 
-def handle(ctx: Context, record: dict[str, Any], ix: int):
+def handle(ctx: Context, record: dict[str, Any], ix: int) -> Generator[CE, None, None]:
     proxy = ctx.make_proxy("Organization")
     proxy.id = record.pop("Id"))
     proxy.add("name", record.pop("Name"))
