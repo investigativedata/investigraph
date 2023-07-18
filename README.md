@@ -5,7 +5,7 @@ etl pipeline, graphical explorer and general toolbox for investigations with fol
 
 ## online documentation
 
-https://investigativedata.github.io/investigraph/
+https://investigraph.dev
 
 ## what is this all about?
 
@@ -25,6 +25,7 @@ The result is an ETL framework that allows research teams to build their own dat
 - [investigraph-etl](https://github.com/investigativedata/investigraph-etl) - Trying out prefect.io for ftm pipeline processing
 - [investigraph-site](https://github.com/investigativedata/investigraph-site) - Landing page for investigraph (next.js app)
 - [investigraph-api](https://github.com/investigativedata/investigraph-api) - public API instance to use as a test playground
+- [runpandarun](https://github.com/investigativedata/runpandarun) - A simple interface written in python for reproducible i/o workflows around tabular data via [pandas](https://pandas.pydata.org/)
 - [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
 - [ftm-joy-ui](https://github.com/investigativedata/ftm-joy-ui/) - React components based on [Joy UI](https://mui.com/joy-ui/getting-started/overview/) for rendering [follow the money](https://followthemoney.tech) stuff
 - [ftmstore-fastapi](https://github.com/investigativedata/ftmstore-fastapi) - Lightweight API that exposes a ftm store to a public endpoint. Will be improved during this project.
