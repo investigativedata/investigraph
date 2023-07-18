@@ -2,7 +2,7 @@
 
 Nomenklatura de-duplicates and integrates different [Follow the Money](https://followthemoney.tech) entities. It serves to clean up messy data and to find links between different datasets.
 
-![nomenklatura screenshot](https://github.com/opensanctions/nomenklatura/raw/master/docs/screenshot.png)
+![nomenklatura screenshot](https://github.com/opensanctions/nomenklatura/raw/main/docs/screenshot.png)
 
 Nomenklatura is mainly developed by [Friedrich Lindenberg](https://pudo.org), founder of [OpenSanctions](https://opensanctions.org)
 
