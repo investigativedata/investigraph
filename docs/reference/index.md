@@ -1,14 +1,19 @@
 # Overview
 
-**investigraph** is a framework to orchestrate data processing workflows that transform source data into [entities](../concepts/entity/).
+**investigraph** is a framework to orchestrate data processing workflows that transform source data into [entities](../concepts/entity.md).
 
-This framework tries to automatize as many functionality (scheduling and executing workflows, monitoring, extracting and storing to various local or remote sources, configuration, ...) as possible with the help of [prefect.io](../stack/prefect/).
+This framework tries to automatize as many functionality (scheduling and executing workflows, monitoring, extracting and storing to various local or remote sources, configuration, ...) as possible with the help of [prefect.io](../stack/prefect.md).
 
-As **investigraph** can be considered as an [ETL-process](https://en.wikipedia.org/wiki/Extract,_transform,_load) for [Follow The Money data](../stack/followthemoney/), the structure (of the codebase and this overview documentation) roughly follows the three steps of such a pipeline: *extract, transform, load*.
+As **investigraph** can be considered as an [ETL-process](https://en.wikipedia.org/wiki/Extract,_transform,_load) for [Follow The Money data](../stack/followthemoney.md), the structure (of the codebase and this overview documentation) roughly follows the three steps of such a pipeline: *extract, transform, load*.
 
-The following documentation assumes you already checked out [the tutorial](../tutorial/). The documentation on this page covers the whole pipeline process more in depth. For a complete (technical) reference, check out [config.yml](./config/) and [parse.py](./parse).
+The following documentation assumes you already checked out [the tutorial](../tutorial.md). The documentation on this page covers the whole pipeline process more in depth. For a complete (technical) reference, check out the references for the core building blocks of **investigraph**:
 
-Most of the running behaviour of a specific [pipeline](../concepts/pipeline) is configured on a per-[dataset](../concepts/dataset) basis and/or via arguments given to a specific run of the pipeline, either via the prefect ui or via command line.
+- [config.yml](config.md)
+- [extract.py](extract.md)
+- [transform.py](transform.md)
+- [load.py](load.md)
+
+Most of the running behaviour of a specific pipeline is configured on a per-[dataset](../concepts/dataset.md) basis and/or via arguments given to a specific run of the pipeline, either via the prefect ui or via command line.
 
 ## Extract
 
@@ -43,7 +48,7 @@ file:///home/user/file.csv.bz2
 
 And, of course, just `http[s]://...`
 
-A pipeline can have more than one source and is defined in the [`config.yml`](./config/) within the `extract.sources` key. This can either be just a list of one or more `uri`s or of more complex source objects.
+A pipeline can have more than one source and is defined in the [`config.yml`](./config.md) within the `extract.sources` key. This can either be just a list of one or more `uri`s or of more complex source objects.
 
 #### Simple source
 
@@ -55,28 +60,7 @@ extract:
 
 This tells the pipeline to fetch the output from the given url without any more logic.
 
-As seen in the [tutorial](../tutorial/), this source has actually encoding problems and we want to skip the first line. So we need to give investigraph a bit more information on how to extract this source.
-
-#### More configurable source
-
-For extracting tabular sources, investigraph uses [pandas](https://pandas.pydata.org/) under the hood. This library has a lot of options on how to read in data, and within our `config.yml` we can just pass any arbitrary argument to [`pandas.read_csv`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv) or [`pandas.read_excel`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html#pandas-read-excel). (investigraph is picking the right function based on the sources mimetype.)
-
-Just put the required arguments in the config key `extract.sources[].extract_kwargs`, in this case (see tutorial) like this:
-
-```yaml
-extract:
-  sources:
-    - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
-      extract_kwargs:
-        encoding: latin
-        skiprows: 1
-    - # ... second source
-```
-
-Under the hood, this calls
-```python
-pandas.read_csv(uri, encoding="latin", skiprows=1)
-```
+As seen in the [tutorial](../tutorial.md), this source has actually encoding problems and we want to skip the first line. So we need to give investigraph a bit more information on how to extract this source.
 
 #### Named source
 
@@ -87,12 +71,104 @@ extract:
   sources:
     - name: ec_juncker
       uri: https://ec.europa.eu/transparencyinitiative/meetings/dataxlsx.do?name=meetingscommissionrepresentatives1419
-      extract_kwargs:
-        skiprows: 1
     - name: ec_leyen
       uri: https://ec.europa.eu/transparencyinitiative/meetings/dataxlsx.do?name=meetingscommissionrepresentatives1924
-      extract_kwargs:
-        skiprows: 1
+```
+
+This helps us for the [next stage](#transform) (see below) to distinguish between different sources and adjust our parsing code to it.
+
+#### More configurable source
+
+For extracting most kinds of sources, investigrap uses [runpandarun](../stack/runpandarun.md) under the hood. This is a wrapper around [pandas](https://pandas.pydata.org) that allows specifying a pandas workflow as a yaml playbook. Pandas has a lot of options on how to read in data, and within our `config.yml` we can just pass any arbitrary argument to [`pandas.read_csv`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv) or [`pandas.read_excel`](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_excel.html#pandas-read-excel). (`runpandarun` is picking the right function based on the sources mimetype.)
+
+Just put the required arguments in the config key `extract.sources[].pandas`, in this case (see tutorial) like this:
+
+```yaml
+extract:
+  sources:
+    - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
+      pandas:
+        read:
+          options:
+            encoding: latin
+            skiprows: 1
+
+```
+
+Under the hood, this calls
+```python
+pandas.read_csv(uri, encoding="latin", skiprows=1)
+```
+
+If `runpandarun` is not able to detect the handler to read in the source, as happening in misconfigured web headers or wrong file extensions, you can manually specify the `read.handler`:
+
+```yaml
+extract:
+  sources:
+    - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
+      pandas:
+        read:
+          handler: read_csv
+          options:
+            encoding: latin
+            skiprows: 1
+```
+
+#### Prepare your data with pandas
+
+In case you want to use the built-in support for [followthemoney mappings](https://followthemoney.tech/docs/mappings/#mappings), you might need to adjust the incoming data a bit more, as per design, `followthemoney` expects an already quite cleaned tabular source.
+
+With the help of [runpandarun](../stack/runpandarun.md) we can basically do anything we need with the source data:
+
+```yaml
+extract:
+  sources:
+    - uri: ./data.csv
+      pandas:
+        read:
+          options:
+            skiprows: 3
+        operations:
+          - handler: DataFrame.rename
+            options:
+              columns:
+                value: amount
+                "First name": first_name
+          - operations: DataFrame.fillna
+            options:
+              value: ""
+          - handler: Series.map
+            column: slug
+            options:
+              func: "lambda x: normality.slugify(x) if isinstance(x) else 'NO DATA'"
+```
+
+This "pandas playbook" translates into these python calls that **investigraph** will run:
+
+```python
+import pandas as pd
+import normality
+
+df = pd.read_csv("./data.csv", skiprows=3)
+df = df.rename(columns={"value": "amount", "First name": "first_name"})
+df = df.fillna("")
+df["slug"] = df["slug"].map(lambda x: normality.slugify(x) if isinstance(x) else 'NO DATA')
+```
+
+Refer to the [runpandarun documentation](https://github.com/simonwoerpel/runpandarun) for more.
+
+
+#### Named source
+
+You can give a name (or identifier) to the source to be able to identify in your code from which source the generated records are coming from, e.g. to adjust a parsing function based on the source file.
+
+```yaml
+extract:
+  sources:
+    - name: ec_juncker
+      uri: https://ec.europa.eu/transparencyinitiative/meetings/dataxlsx.do?name=meetingscommissionrepresentatives1419
+    - name: ec_leyen
+      uri: https://ec.europa.eu/transparencyinitiative/meetings/dataxlsx.do?name=meetingscommissionrepresentatives1924
 ```
 
 This helps us for the [next stage](#transform) (see below) to distinguish between different sources and adjust our parsing code to it.
@@ -137,13 +213,13 @@ Or, to output the first few records as `json`:
 
 ## Transform
 
-As outlined, **investigraph** tries to automatize everything *around* this stage. That's because transforming any arbitrary source data into [ftm entities](../concepts/entity/) is very dependant on the actual dataset.
+As outlined, **investigraph** tries to automatize everything *around* this stage. That's because transforming any arbitrary source data into [ftm entities](../concepts/entity.md) is very dependant on the actual dataset.
 
 Still, for simple use cases, you don't need to write any `python code` here at all. Just define a *mapping*. For more complex scenarios, write your own `transform` function.
 
 ### Mapping
 
-Simply plug in a standardized ftm mapping (as [described here](https://followthemoney.tech/docs/mappings/#mappings)) into your pipeline configuration under the root key `mapping`:
+Simply plug in a standardized ftm mapping (as [described here](https://followthemoney.tech/docs/mappings/#mappings)) into your pipeline configuration under the root key `transform.queries`:
 
 ```yaml
 transform:
@@ -159,7 +235,7 @@ transform:
             # ...
 ```
 
-As it follows the mapping specification from [Follow The Money](../stack/followthemoney), any existing mapping can be copied over here and a mapping can easily (and independent of investigraph) tested with the ftm command line:
+As it follows the mapping specification from [Follow The Money](../stack/followthemoney.md), any existing mapping can be copied over here and a mapping can easily (and independent of investigraph) tested with the ftm command line:
 
     ftm map-csv ./<dataset>/config.yml -i ./data.csv
 
@@ -219,7 +295,7 @@ def parse(ctx, record, ix):
     yield proxy
 ```
 
-The util function `make_proxy` creates an [entity](../concepts/entity/), which is implemented in `nomenklatura.entity.CompositeEntity`, with the schema "Organization".
+The util function `make_proxy` creates an [entity](../concepts/entity.md), which is implemented in `nomenklatura.entity.CompositeEntity`, with the schema "Organization".
 
 Then following the [ftm python api](https://followthemoney.tech/docs/api/), properties can be added via `proxy.add(<prop>, <value>)`
 
@@ -229,11 +305,11 @@ To iteratively test your configuration, you can use `investigraph inspect` to se
 
     investigraph inspect <path/to/config.yml> --extract
 
-This will output the first few mappend [entities](../concepts/entity/).
+This will output the first few mappend [entities](../concepts/entity.md).
 
 ### Aggregation
 
-One essential feature from the underlying [followthemoney toolkit](../stack/followthemoney/) is the so called "entity fragmentation". This means, pipelines can output *partial* data for a given entity and later merge them together. For example, if one data source has information about a `Person`s birth date, and another has information about the nationality of this person, the two different pipelines would produce two different fragments of the same [entity](../concepts/entity/) that are aggregated at a later stage. [Read more about the technical details here.](https://followthemoney.tech/docs/fragments/)
+One essential feature from the underlying [followthemoney toolkit](../stack/followthemoney.md) is the so called "entity fragmentation". This means, pipelines can output *partial* data for a given entity and later merge them together. For example, if one data source has information about a `Person`s birth date, and another has information about the nationality of this person, the two different pipelines would produce two different fragments of the same [entity](../concepts/entity/) that are aggregated at a later stage. [Read more about the technical details here.](https://followthemoney.tech/docs/fragments/)
 
 Aggregation can happen in memory (per default) or via iterating through a sql database (if the complete data doesn't fit into the machines memory). When outputting to a `postgresql`-backed [ftm store](https://github.com/alephdata/followthemoney-store), entity fragments are merged on write, so no aggregation is needed. **investigraph** will automatically detect if you are using a postgresql endpoint and skip the aggregation stage in this case.
 
@@ -247,7 +323,7 @@ investigraph has to store the intermediate entity fragments somewhere before mer
 
     investigraph run ... --fragments-uri s3://my_bucket/<dataset>/fragments.json
 
-This can as well be defined in the datasets [`config.yml`](./config/):
+This can as well be defined in the datasets [`config.yml`](./config.md):
 
 ```yaml
 load:
@@ -256,13 +332,13 @@ load:
 
 ## Load
 
-The transformed metadata and [entities](../concepts/entity/) can be written to various local or remote targets, including cloud storage and sql databases.
+The transformed metadata and [entities](../concepts/entity.md) can be written to various local or remote targets, including cloud storage and sql databases.
 
-All outputs can be specified within the prefect ui, the [`config.yml`](./config/) or via command line arguments.
+All outputs can be specified within the prefect ui, the [`config.yml`](./config.md) or via command line arguments.
 
 ### Metadata index.json
 
-Location for the resulting [dataset metadata](../concepts/dataset/), typically called `index.json`. Again, as investigraph is using [smart_open](https://github.com/RaRe-Technologies/smart_open) (see above), this can basically be anywhere:
+Location for the resulting [dataset metadata](../concepts/dataset.md), typically called `index.json`. Again, as investigraph is using [smart_open](https://github.com/RaRe-Technologies/smart_open) (see above), this can basically be anywhere:
 
 **config.yml**
 
@@ -277,7 +353,7 @@ load:
 
 ### Entities
 
-[Entities](../concepts/entity/) can be written to any file uri or directly to a [Follow The Money store](https://github.com/alephdata/followthemoney-store) specified via a sql connection string.
+[Entities](../concepts/entity.md) can be written to any file uri or directly to a [Follow The Money store](https://github.com/alephdata/followthemoney-store) specified via a sql connection string.
 
 As a convention, entity json files should use the extension `.ftm.json`
 

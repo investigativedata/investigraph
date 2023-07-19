@@ -2,9 +2,8 @@ SRC_DIR := docs
 BUILD_DIR := site
 CLOG_DIR := changelogs
 CLOG_FILE := CHANGELOG.md
-GITHUB_ORG := investigativedata
-REPOS := investigraph-etl
-BRANCH := main
+REPOS := investigraph-etl runpandarun
+BRANCH := develop
 CHANGELOGS := $(REPOS:%=$(SRC_DIR)/$(CLOG_DIR)/%.md)
 
 all: clean $(BUILD_DIR)
@@ -15,8 +14,11 @@ $(BUILD_DIR): $(CHANGELOGS)
 $(SRC_DIR)/$(CLOG_DIR):
 	mkdir -p $(SRC_DIR)/$(CLOG_DIR)
 
+
+$(SRC_DIR)/$(CLOG_DIR)/investigraph-etl.md: GITHUB=investigativedata
+$(SRC_DIR)/$(CLOG_DIR)/runpandarun.md: GITHUB=simonwoerpel
 $(SRC_DIR)/$(CLOG_DIR)/%.md: $(SRC_DIR)/$(CLOG_DIR)
-	wget -O $(SRC_DIR)/$(CLOG_DIR)/$*.md https://raw.githubusercontent.com/$(GITHUB_ORG)/$*/$(BRANCH)/$(CLOG_FILE)
+	wget -O $@ https://raw.githubusercontent.com/$(GITHUB)/$*/$(BRANCH)/$(CLOG_FILE)
 
 .PHONY: clean
 clean:
@@ -26,3 +28,4 @@ clean:
 .PHONY: serve
 serve: clean $(CHANGELOGS)
 	mkdocs serve
+

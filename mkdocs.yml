@@ -21,11 +21,13 @@ nav:
     - deployment/services.md
     - deployment/docker.md
   - Stack:
+    - stack/runpandarun.md
     - stack/followthemoney.md
     - stack/prefect.md
     - stack/nomenklatura.md
   - Updates:
     - changelogs/investigraph-etl.md
+    - changelogs/runpandarun.md
 theme:
   name: material
   font:

@@ -1,6 +1,6 @@
 # Data Catalog
 
-A **data catalog** is a collection of one or more [datasets](../dataset/) that has a specific topical manner, like "COVID datasets" or "Company registries". Datasets itself can be in multiple catalogs.
+A **data catalog** is a collection of one or more [datasets](./dataset.md) that has a specific topical manner, like "COVID datasets" or "Company registries". Datasets itself can be in multiple catalogs.
 
 A catalog is found remotely as a `JSON` file that holds the [metadata](#metadata) and references resource files for the included datasets.
 
@@ -13,9 +13,9 @@ Common catalogs:
 
 ## Metadata
 
-The catalog model for **investigraph** is adapted from the [nomenklatura](../../stack/nomenklatura) library.
+The catalog model for **investigraph** is adapted from the [nomenklatura](../stack/nomenklatura.md) library.
 
-It requires one property, `datasets`, which is a list of [datasets](../dataset/)
+It requires one property, `datasets`, which is a list of [datasets](./dataset.md)
 
 ```json
 {

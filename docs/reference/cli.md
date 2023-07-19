@@ -52,7 +52,7 @@ Adjust chunk size (default: 1000)
 
 ## Inspect dataset configurations
 
-[See tutorial](../../tutorial/)
+[See tutorial](../tutorial.md)
 
     investigraph inspect ./path/to/config.yml
 

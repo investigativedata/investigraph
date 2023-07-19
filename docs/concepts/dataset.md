@@ -1,8 +1,8 @@
 # Dataset
 
-A specific **dataset** of a source with a clear scope, consisting of individual [entities](../entity/). Example: "Company register of the Republic of Moldova" or "Lobby register of the German Bundestag". A dataset can either be a "one shot", i.e. generated only once, or incrementally updated (daily, weekly, monthly...) if the data source allows it.
+A specific **dataset** of a source with a clear scope, consisting of individual [entities](entity.md). Example: "Company register of the Republic of Moldova" or "Lobby register of the German Bundestag". A dataset can either be a "one shot", i.e. generated only once, or incrementally updated (daily, weekly, monthly...) if the data source allows it.
 
-Datasets can be part of a [data catalog](../catalog/).
+Datasets can be part of a [data catalog](catalog.md).
 
 A dataset is found remotely as a `JSON` file that holds the [metadata](#metadata) and references resource files for the included data.
 
@@ -12,7 +12,7 @@ A dataset is found remotely as a `JSON` file that holds the [metadata](#metadata
 
 ## Metadata
 
-The dataset model for **investigraph** is adapted from the [nomenklatura](../../stack/nomenklatura) library.
+The dataset model for **investigraph** is adapted from the [nomenklatura](../stack/nomenklatura.md) library.
 
 A dataset requires two properties, `name` and `title`, and a list of `resources`.
 

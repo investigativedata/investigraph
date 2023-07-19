@@ -1,8 +1,8 @@
 # config.yml
 
-The main entry point for a specific [dataset](../../concepts/dataset/) configuration. This file should be placed within a [block](https://docs.prefect.io/latest/concepts/blocks/) under a subfolder named by the dataset, e.g.: `./path-to-datasets/<dataset>/config.yml`
+The main entry point for a specific [dataset](../concepts/dataset.md) configuration. This file should be placed within a [block](https://docs.prefect.io/latest/concepts/blocks/) under a subfolder named by the dataset, e.g.: `./path-to-datasets/<dataset>/config.yml`
 
-When not using blocks (as for local developement), any arbitrary config files can be referenced to use via [command line](../cli/):
+When not using blocks (as for local developement), any arbitrary config files can be referenced to use via [command line](./cli.md):
 
     investigraph run -c ./path/to/config/file.yml
 
@@ -28,7 +28,7 @@ Default: capitalized `name` from above.
 
 #### `prefix`
 
-slug prefix for [entity](../../concepts/entity/) IDs.
+slug prefix for [entity](../concepts/entity.md) IDs.
 
 Example: `ec`
 
@@ -58,7 +58,7 @@ Default: `None`
 
 #### `resources`
 
-A list of recources that hold [entities](../../concepts/entity/) from this dataset.
+A list of recources that hold [entities](../concepts/entity.md) from this dataset.
 
 Example:
 
@@ -126,7 +126,7 @@ extract:
 
 ### Transform
 
-Configuration for the transformation stage, for defining a [FollowTheMoney mapping](../stack/followthemoney/) or referencing custom transformation code. When a custom handler is defined, the query mapping is ignored.
+Configuration for the transformation stage, for defining a [FollowTheMoney mapping](../stack/followthemoney.md) or referencing custom transformation code. When a custom handler is defined, the query mapping is ignored.
 
 ```yaml
 transform:
@@ -138,7 +138,7 @@ transform:
 
 ### Load
 
-The final stage that loads the transformed [Entities](../concepts/entity/) into defined targets.
+The final stage that loads the transformed [Entities](../concepts/entity.md) into defined targets.
 
 ```yaml
 load:
@@ -179,7 +179,7 @@ Specify if entities should be aggregated, default: `true`
 
 ## A complete example
 
-Taken from the [tutorial](../../tutorial/)
+Taken from the [tutorial](../tutorial.md)
 
 ```yaml
 name: gdho
@@ -208,9 +208,11 @@ publisher:
 extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
-      extract_kwargs:
-        encoding: latin
-        skiprows: 1
+      pandas:
+        read:
+          options:
+            encoding: latin
+            skiprows: 1
 
 transform:
   queries:

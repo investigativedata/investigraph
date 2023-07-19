@@ -4,9 +4,9 @@ A data point with defined properties and optional references to other entities. 
 
 Example of three different entities: 1. a person with a name and date of birth, 2. a company with a location and date of incorporation, and 3. the description of the connection of this person and company: "Directorship" with a start and end date.
 
-**investigraph** uses [Follow The Money](../../stack/followthemoney) as the underlaying model and technology to deal with entities.
+**investigraph** uses [Follow The Money](../stack/followthemoney.md) as the underlaying model and technology to deal with entities.
 
-Entities belong to one or more [datasets](../dataset/), described via their `dataset` property.
+Entities belong to one or more [datasets](dataset.md), described via their `dataset` property.
 
 ## Example
 

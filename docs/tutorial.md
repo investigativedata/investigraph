@@ -1,6 +1,6 @@
 # Tutorial
 
-**investigraph** tries to automatize as many functionality (scheduling and executing workflows, monitoring, configuration, ...) as possible with the help of [prefect.io](../stack/prefect/).
+**investigraph** tries to automatize as many functionality (scheduling and executing workflows, monitoring, configuration, ...) as possible with the help of [prefect.io](./stack/prefect.md).
 
 The only thing you have to manage by yourself is the **dataset configuration**, which, in the easiest scenario, is just a `YAML` file that contains a bit of metadata and pipeline instructions.
 
@@ -83,7 +83,7 @@ Ooops! This shows us a python exception saying something about `utf-8` error. Ye
 
 When downloading this csv file manually and opening in a spreadsheet application, you will actually notice that it is in `latin` encoding and has 1 empty row at the top. 🤦 (welcome to real world data)
 
-Under the hood, **investigraph** is using [pandas.read_csv](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv) and there is an option `extract_kwargs` to pass arguments to pandas on how to read this csv. In this case, it would look like this (refer to the `pandas` documentation for all options):
+Under the hood, **investigraph** is using [pandas.read_csv](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.read_csv.html#pandas.read_csv) and there is an option `pandas` to pass instructions to pandas on how to read this csv. In this case, it would look like this (refer to the `pandas` documentation for all options):
 
 
 ```yaml
@@ -91,9 +91,11 @@ Under the hood, **investigraph** is using [pandas.read_csv](https://pandas.pydat
 extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
-      extract_kwargs:
-        encoding: latin
-        skiprows: 1
+      pandas:
+        read:
+          options:
+            encoding: latin
+            skiprows: 1
 ```
 
 Now **investigraph** is able to fetch and parse the csv source:
@@ -180,9 +182,11 @@ publisher:
 extract:
   sources:
     - uri: https://www.humanitarianoutcomes.org/gdho/search/results?format=csv
-      extract_kwargs:
-        encoding: latin
-        skiprows: 1
+      pandas:
+        read:
+          options:
+            encoding: latin
+            skiprows: 1
 
 transform:
   queries:
@@ -274,12 +278,12 @@ Now, you can use this block when running flows (via the ui) or command line:
 
 ## Optional: use python code to transform data
 
-Instead of writting the ftm mapping in the `config.yml`, which can be a bit limiting for advanced use cases, you can instead write arbitray python code. The code needs to live anywhere relatively to the `config.yml`, e.g. next to it in a file `etl.py`. In it, write your own transform (or extract, load) function.
+Instead of writting the ftm mapping in the `config.yml`, which can be a bit limiting for advanced use cases, you can instead write arbitray python code. The code needs to live anywhere relatively to the `config.yml`, e.g. next to it in a file `transform.py`. In it, write your own transform (or extract, load) function.
 
 To transform the records within python and achieve the same result for the `gdho` dataset, an example script would look like this:
 
 ```python
-def transform(ctx, record, ix):
+def handle(ctx, record, ix):
     proxy = ctx.make_proxy("Organization")
     proxy.id = record.pop("Id"))
     proxy.add("name", record.pop("Name"))
@@ -294,10 +298,13 @@ Now, tell the `transform` key in the `config.yml` to use this python file instea
 # extract ...
 transform:
   queries: # ...
-  handler: ./etl.py:transform
+  handler: ./transform.py:handle
 ```
 
 After it, test the pipeline again:
 
     investigraph inspect ./datasets/gdho/config.yml --transform
 
+## Conclusion
+
+We have shown how we can extract a datasource without the need to write any python code, just with yaml specifications. [Head on to the documentation](./reference/index.md) to dive deeper into **investigraph**

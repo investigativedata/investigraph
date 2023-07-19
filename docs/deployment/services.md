@@ -1,14 +1,14 @@
 # Services
 
-For a production deployment, investigraph needs some different running services based on the [prefect.io](../../stack/prefect) deployment needs.
+For a production deployment, investigraph needs some different running services based on the [prefect.io](../stack/prefect.md) deployment needs.
 
 The use case for deploying investigraph as outlined here is a decentralized, multi-node scenario where workflows are triggered and scheduled via the server ui instead of the command line (which is often used within the investigraph documentation).
 
-[See docker deployment](../docker/) for documentation on how to deploy the services outlined here within a docker environment.
+[See docker deployment](./docker.md) for documentation on how to deploy the services outlined here within a docker environment.
 
 ## Prefect server
 
-The prefect server manages workflow runs and state. It as well serves a user interface for configuration, adding [blocks](https://docs.prefect.io/latest/concepts/blocks/) and scheduling workflows. After [installing investigraph](../../install), you can spin up the server locally via
+The prefect server manages workflow runs and state. It as well serves a user interface for configuration, adding [blocks](https://docs.prefect.io/latest/concepts/blocks/) and scheduling workflows. After [installing investigraph](../install.md), you can spin up the server locally via
 
     prefect server start
 

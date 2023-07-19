@@ -6,7 +6,7 @@ Nomenklatura de-duplicates and integrates different [Follow the Money](https://f
 
 Nomenklatura is mainly developed by [Friedrich Lindenberg](https://pudo.org), founder of [OpenSanctions](https://opensanctions.org)
 
-**investigraph** uses Nomenklatura as a foundation to model [catalogs](../../concepts/catalog), [datasets](../../general/dataset) and [entities](../../general/entity).
+**investigraph** uses Nomenklatura as a foundation to model [catalogs](../concepts/catalog.md), [datasets](../concepts/dataset.md) and [entities](../concepts/entity.md).
 
 ## Resources
 
