@@ -6,4 +6,4 @@ Development of this library was paused in 2020 but is now active again with the 
 
 ## Resources
 
-- [github repository with docs](https://github.com/opensanctions/nomenklatura)
+- [github repository with docs](https://github.com/simonwoerpel/runpandarun)
