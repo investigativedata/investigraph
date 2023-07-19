@@ -24,7 +24,7 @@ The result is an ETL framework that allows research teams to build their own dat
 - [investigraph-datasets](https://github.com/investigativedata/investigraph-datasets) - Example datasets configuration
 - [investigraph-site](https://github.com/investigativedata/investigraph-site) - Landing page for investigraph (next.js app)
 - [investigraph-api](https://github.com/investigativedata/investigraph-api) - public API instance to use as a test playground
-- [runpandarun](https://github.com/investigativedata/runpandarun) - A simple interface written in python for reproducible i/o workflows around tabular data via [pandas](https://pandas.pydata.org/)
+- [runpandarun](https://github.com/simonwoerpel/runpandarun) - A simple interface written in python for reproducible i/o workflows around tabular data via [pandas](https://pandas.pydata.org/)
 - [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
 - [ftmstore-fastapi](https://github.com/investigativedata/ftmstore-fastapi) - Lightweight API that exposes a ftm store to a public endpoint.
 
