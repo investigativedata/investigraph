@@ -25,7 +25,7 @@ nav:
     - stack/followthemoney.md
     - stack/prefect.md
     - stack/nomenklatura.md
-  - Updates:
+  - Changelogs:
     - changelogs/investigraph-etl.md
     - changelogs/runpandarun.md
 theme:
