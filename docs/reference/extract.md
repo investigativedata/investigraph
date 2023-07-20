@@ -22,11 +22,11 @@ import csv
 from io import StringIO
 from typing import Any, Generator
 
-from investigraph.model import Context
-from investigraph.model.source import TResponse
+from investigraph.model import Context, Resolver
 
-def handle(ctx: Context, res: TResponse) -> Generator[dict[str, Any], None, None]:
-    yield from csv.DictReader(StringIO(res.content))
+def handle(ctx: Context, res: Resolver) -> Generator[dict[str, Any], None, None]:
+    content = res.get_content()
+    yield from csv.DictReader(StringIO(content))
 ```
 
 ### fetch by yourself
@@ -47,7 +47,7 @@ extract:
 import requests
 from typing import Any, Generator
 
-from investigraph.model.context import Context
+from investigraph.model import Context
 
 def handle(ctx: Context) -> Generator[dict[str, Any], None, None]:
     res = requests.get(ctx.source.uri)
