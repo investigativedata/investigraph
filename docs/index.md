@@ -11,9 +11,11 @@
 
 [Head over to the tutorial](./tutorial.md)
 
-## Abstract
+## About
 
-The result is an ETL framework that allows research teams to build their own data catalog themselves as easily as possible and without much coding, and to incrementally update the individual datasets (e.g., through automated web scraping). This process (data import & update) should be possible without programming knowledge, by means of a frontend. However, it cannot be ruled out that for the 1st step (extraction) of an ETL pipeline for a given dataset, some coding is still needed, as each source is individual and may require special parsing. This will be partially addressed by a util library that provides adapters for common data inputs (json, csv, web-api).
+**investigraph** is an [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) framework that allows research teams to build their own data catalog themselves as easily and reproducable as possible. The **investigraph** framework provides logic for *extracting*, *transforming* and *loading* any data source into [followthemoney entities](https://followthemoney.tech/).
+
+For most common data source formats, this process is possible without programming knowledge, by means of an easy `yaml` specification interface. However, if it turns out that a specific dataset can not be parsed with the built-in logic, a developer can plug in *custom python scripts* at specific places within the pipeline to fulfill even the most edge cases in data processing.
 
 ### Value for investigative research teams
 - standardized process to convert different data sets into a [uniform and thus comparable format](https://followthemoney.tech)
@@ -24,13 +26,13 @@ The result is an ETL framework that allows research teams to build their own dat
 - Access to a public (open source) data catalog operated by [investigativedata.io](https://investigativedata.io)
 
 ## Github repositories
-- [investigraph](https://github.com/investigativedata/investigraph) - The meta repo from which this page is rendered
-- [investigraph-etl](https://github.com/investigativedata/investigraph-etl) - The main codebase for the etl pipeline framework based on prefect.io
+- [investigraph-etl](https://github.com/investigativedata/investigraph-etl) - etl style pipeline framework for followthemoney data based on [prefect.io](https://prefect.io)
+- [investigraph-eu](https://github.com/investigativedata/investigraph-eu) - Catalog of european datasets powered by investigraph
+- [runpandarun](https://github.com/simonwoerpel/runpandarun) - A simple interface written in python for reproducible i/o workflows around tabular data via [pandas](https://pandas.pydata.org/)
+- [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
 - [investigraph-datasets](https://github.com/investigativedata/investigraph-datasets) - Example datasets configuration
 - [investigraph-site](https://github.com/investigativedata/investigraph-site) - Landing page for investigraph (next.js app)
 - [investigraph-api](https://github.com/investigativedata/investigraph-api) - public API instance to use as a test playground
-- [runpandarun](https://github.com/simonwoerpel/runpandarun) - A simple interface written in python for reproducible i/o workflows around tabular data via [pandas](https://pandas.pydata.org/)
-- [ftmq](https://github.com/investigativedata/ftmq) - An attempt towards a [followthemoney](https://github.com/alephdata/followthemoney) query dsl
 - [ftmstore-fastapi](https://github.com/investigativedata/ftmstore-fastapi) - Lightweight API that exposes a ftm store to a public endpoint.
 
 ## Supported by
