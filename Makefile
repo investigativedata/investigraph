@@ -2,7 +2,7 @@ SRC_DIR := docs
 BUILD_DIR := site
 CLOG_DIR := changelogs
 CLOG_FILE := CHANGELOG.md
-REPOS := investigraph-etl runpandarun
+REPOS := investigraph-etl runpandarun ftmq
 BRANCH := develop
 CHANGELOGS := $(REPOS:%=$(SRC_DIR)/$(CLOG_DIR)/%.md)
 
@@ -16,6 +16,7 @@ $(SRC_DIR)/$(CLOG_DIR):
 
 
 $(SRC_DIR)/$(CLOG_DIR)/investigraph-etl.md: GITHUB=investigativedata
+$(SRC_DIR)/$(CLOG_DIR)/ftmq.md: GITHUB=investigativedata
 $(SRC_DIR)/$(CLOG_DIR)/runpandarun.md: GITHUB=simonwoerpel
 $(SRC_DIR)/$(CLOG_DIR)/%.md: $(SRC_DIR)/$(CLOG_DIR)
 	wget -O $@ https://raw.githubusercontent.com/$(GITHUB)/$*/$(BRANCH)/$(CLOG_FILE)

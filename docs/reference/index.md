@@ -23,7 +23,7 @@ This stage is configured via the `extract` key within the `config.yml`
 
 ### Source
 
-A data source is defined by a `uri`. As investigraph is using [smart_open](https://github.com/RaRe-Technologies/smart_open) under the hood, this `uri` can be anything from a local file path to a remote s3 resource.
+A data source is defined by a `uri`. As investigraph is using [fsspec](https://github.com/fsspec/filesystem_spec) under the hood, this `uri` can be anything from a local file path to a remote s3 resource.
 
 Examples for source uris:
 ```
@@ -307,17 +307,28 @@ To iteratively test your configuration, you can use `investigraph inspect` to se
 
 This will output the first few mappend [entities](../concepts/entity.md).
 
-### Aggregation
+## Load
 
-One essential feature from the underlying [followthemoney toolkit](../stack/followthemoney.md) is the so called "entity fragmentation". This means, pipelines can output *partial* data for a given entity and later merge them together. For example, if one data source has information about a `Person`s birth date, and another has information about the nationality of this person, the two different pipelines would produce two different fragments of the same [entity](../concepts/entity/) that are aggregated at a later stage. [Read more about the technical details here.](https://followthemoney.tech/docs/fragments/)
+The transformed metadata and [entities](../concepts/entity.md) can be written to various local or remote targets, including cloud storage and sql databases.
 
-Aggregation can happen in memory (per default) or via iterating through a sql database (if the complete data doesn't fit into the machines memory). When outputting to a `postgresql`-backed [ftm store](https://github.com/alephdata/followthemoney-store), entity fragments are merged on write, so no aggregation is needed. **investigraph** will automatically detect if you are using a postgresql endpoint and skip the aggregation stage in this case.
+All outputs can be specified within the prefect ui, the [`config.yml`](./config.md) or via command line arguments.
 
-To disable aggregation, set the flag in the prefect ui when starting a flow, or specify via command-line:
+### Metadata
 
-    investigraph run ... --no-aggregate
+Location for the resulting [dataset metadata](../concepts/dataset.md), typically called `index.json`. Again, as investigraph is using [fsspec](https://github.com/fsspec/filesystem_spec) (see above), this can basically be anywhere:
 
-#### Fragments uri
+**config.yml**
+
+```yaml
+load:
+  index_uri: s3://my_bucket/<dataset>/index.json
+```
+
+**command line**
+
+    investigraph run ... --index-uri sftp://username:password@host/<dataset>/index.json
+
+### Fragments
 
 investigraph has to store the intermediate entity fragments somewhere before merging them into entities in the last step. Per default, fragments are written to local files, but if you are using a decentralized setup where several agents are emitting fragments, you should specify a remote uri for it:
 
@@ -330,26 +341,6 @@ load:
   fragments_uri: sftp://username:password@host/<dataset>/index.json
 ```
 
-## Load
-
-The transformed metadata and [entities](../concepts/entity.md) can be written to various local or remote targets, including cloud storage and sql databases.
-
-All outputs can be specified within the prefect ui, the [`config.yml`](./config.md) or via command line arguments.
-
-### Metadata index.json
-
-Location for the resulting [dataset metadata](../concepts/dataset.md), typically called `index.json`. Again, as investigraph is using [smart_open](https://github.com/RaRe-Technologies/smart_open) (see above), this can basically be anywhere:
-
-**config.yml**
-
-```yaml
-load:
-  index_uri: s3://my_bucket/<dataset>/index.json
-```
-
-**command line**
-
-    investigraph run ... --index-uri sftp://username:password@host/<dataset>/index.json
 
 ### Entities
 
@@ -381,4 +372,20 @@ load:
 **command line**
 
     investigraph run ... --entities-uri ...
+
+## Aggregate
+
+One essential feature from the underlying [followthemoney toolkit](../stack/followthemoney.md) is the so called "entity fragmentation". This means, pipelines can output *partial* data for a given entity and later merge them together. For example, if one data source has information about a `Person`s birth date, and another has information about the nationality of this person, the two different pipelines would produce two different fragments of the same [entity](../concepts/entity/) that are aggregated at a later stage. [Read more about the technical details here.](https://followthemoney.tech/docs/fragments/)
+
+Aggregation can happen in memory (per default) or via iterating through a sql database (if the complete data doesn't fit into the machines memory).
+
+To disable aggregation, set the flag in the prefect ui when starting a flow, or specify via command-line:
+
+    investigraph run ... --no-aggregate
+
+Or in the yaml config:
+
+```yaml
+aggregate: False
+```
 

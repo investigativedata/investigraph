@@ -16,6 +16,7 @@ nav:
     - reference/extract.md
     - reference/transform.md
     - reference/load.md
+    - reference/aggregate.md
     - reference/settings.md
   - Deployment:
     - deployment/services.md
@@ -27,6 +28,7 @@ nav:
     - stack/nomenklatura.md
   - Changelogs:
     - changelogs/investigraph-etl.md
+    - changelogs/ftmq.md
     - changelogs/runpandarun.md
 theme:
   name: material

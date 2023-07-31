@@ -147,34 +147,68 @@ load:
 
 #### `load.index_uri`
 
-Uri to output dataset metadata. Can be anything that `smart_open` understands.
+Uri to output dataset metadata. Can be anything that `fsspec` understands.
 
-**Example**: s3://<bucket-name>/<dataset-name>/index.json
+**Example**: `s3://<bucket-name>/<dataset-name>/index.json`
 
-**Default**: ./data/<dataset-name>/index.json
+**Default**: `./data/<dataset-name>/index.json`
 
 #### `load.entities_uri`
 
-Uri to output transformed entities. Can be anything that `smart_open` understands, plus a `SQL` endpoint (for use with [followthemoney-store](https://github.com/alephdata/followthemoney-store))
+Uri to output transformed entities. Can be anything that `fsspec` understands, plus a `SQL` endpoint (for use with [followthemoney-store](https://github.com/alephdata/followthemoney-store))
 
 **Example**:
 
-- s3://<bucket-name>/<dataset-name>/entities.ftm.json
-- postgresql://user:password@host:port/database
+- `s3://<bucket-name>/<dataset-name>/entities.ftm.json`
+- `postgresql://user:password@host:port/database`
 
-**Default**: ./data/<dataset-name>/entities.ftm.json
+**Default**: `./data/<dataset-name>/entities.ftm.json`
 
 #### `load.fragments_uri`
 
-Uri to output intermediate entity fragments. Can be anything that `smart_open` understands.
+Uri to output intermediate entity fragments. Can be anything that `fsspec` understands.
 
-**Example**: s3://<bucket-name>/<dataset-name>/fragments.json
+**Example**: `s3://<bucket-name>/<dataset-name>/fragments.json`
 
-**Default**: ./data/<dataset-name>/fragments.json
+**Default**: `./data/<dataset-name>/fragments.json`
 
-#### `load.aggregate`
+### Aggregate
 
-Specify if entities should be aggregated, default: `true`
+Specify if entities should be aggregated and how. Per default, aggregation happens in memory.
+
+Turn off aggregation completly:
+
+```yaml
+aggregate: false
+```
+
+#### `aggregate.handler`
+
+If datasets are too large to fit into memory, aggregation can happen within a database (specified via the `FTM_DATABASE_URI` env var):
+
+```yaml
+aggregate:
+  handler: db
+```
+
+This can be a custom handler as well (as in the other stages), e.g.:
+
+```yaml
+aggregate:
+  handler: ./aggregate.py:handle
+```
+
+[See aggregate.py for details](./aggregate.md)
+
+#### `aggregate.db_uri`
+
+Specify the database connection when the `db` handler is used.
+
+```yaml
+aggregate:
+  handler: db
+  db_uri: postgresql:///my_database
+```
 
 
 ## A complete example
@@ -245,4 +279,7 @@ transform:
 load:
   index_uri: s3://s3.investigativedata.org@data.ftm.store/investigraph/gdho/index.json
   entities_uri: s3://s3.investigativedata.org@data.ftm.store/investigraph/gdho/entities.ftm.json
+
+aggregate:
+  handler: db
 ```

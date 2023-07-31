@@ -14,15 +14,15 @@
 
 Where to output dataset metadata:
 
-    --index-uri <smart_open_uri>
+    --index-uri <uri>
 
 Where to output entities:
 
-    --entities-uri <smart_open_uri>
+    --entities-uri <uri>
 
 Where to output (intermediate) entity fragments:
 
-    --fragments-uri <smart_open_uri>
+    --fragments-uri <uri>
 
 Disable aggregation:
 
@@ -62,7 +62,7 @@ Adjust chunk size (default: 1000)
 
 ## Build a catalog
 
-Build a catalog from datasets metadata and write it to anywhere from stdout (default) to any uri `smart_open` can handle, e.g.:
+Build a catalog from datasets metadata and write it to anywhere from stdout (default) to any uri `fsspec` can handle, e.g.:
 
     investigraph build-catalog catalog.yml -u s3://mybucket/catalog.json
 
