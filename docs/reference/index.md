@@ -408,3 +408,14 @@ Or in the yaml config:
 aggregate: False
 ```
 
+### Use a database
+
+Per default, aggregation happns in memory. If the dataset is too big for that, specify the handler and a database uri instead:
+
+```yaml
+aggregate:
+  handler: db
+  db_uri: postgresql:///ftm
+```
+
+Or, [bring your own code](./aggregate.md)
