@@ -111,7 +111,7 @@ Default: `investigraph.logic.extract:handle`
 
 When using your own extractor, you can disable source fetching by investigraph, instead fetch (and extract) your sources within your own code:
 
-```
+```yaml
 extract:
   handler: ./extract.py:handle
   fetch: false
@@ -119,9 +119,40 @@ extract:
 
 Or, a python module (must be in `PYTHONPATH`)
 
-```
+```yaml
 extract:
   handler: my_module.extractors:json
+```
+
+#### `extract.pandas`
+
+Pandas operations to apply to the data (see [runpandarun](https://github.com/simonwoerpel/runpandarun)), including [datapatch](https://github.com/pudo/datapatch)
+
+```yaml
+extract:
+  pandas:
+    read:
+      options:
+        skiprows: 2
+    operations:
+      - handler: DataFrame.fillna
+        options:
+          value: ""
+    patch:
+      countries:
+        - match: "Greet Britain"
+          value: "Great Britain"
+```
+
+Can also be applied per source:
+
+```yaml
+extract:
+  sources:
+    - uri: test.csv
+      options:
+        pandas:
+          # ...
 ```
 
 ### Transform

@@ -17,6 +17,14 @@
 
 For most common data source formats, this process is possible without programming knowledge, by means of an easy `yaml` specification interface. However, if it turns out that a specific dataset can not be parsed with the built-in logic, a developer can plug in *custom python scripts* at specific places within the pipeline to fulfill even the most edge cases in data processing.
 
+### Features
+- Cached data fetching based on `HEAD` requests and their response headers
+- Data extraction based on `pandas` ([runpandarun](https://github.com/simonwoerpel/runpandarun))
+- Data patching via [datapatch](https://github.com/pudo/datapatch)
+- Transforming data records into [followthemoney](https://followthemoney.tech) entities via mappings
+- Loading result data into a various range of targets, including cloud storage (via [fsspec](https://filesystem-spec.readthedocs.io/en/latest/index.html)) or sql databases (via [followthemoney-store](https://github.com/alephdata/followthemoney-store))
+- "Bring your own code" and plug it in into the right stage if the built-in logic doesn't fit your use case
+
 ### Value for investigative research teams
 - standardized process to convert different data sets into a [uniform and thus comparable format](https://followthemoney.tech)
 - control of this process for non-technical people

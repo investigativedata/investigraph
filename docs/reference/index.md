@@ -28,8 +28,6 @@ A data source is defined by a `uri`. As investigraph is using [fsspec](https://g
 Examples for source uris:
 ```
 s3://my_bucket/data.csv
-s3://my_key:my_secret@my_bucket/data.csv
-s3://my_key:my_secret@my_server:my_port@my_bucket/data.csv
 gs://my_bucket/data.csv
 azure://my_bucket/data.csv
 hdfs:///path/data.csv
@@ -134,7 +132,7 @@ extract:
               columns:
                 value: amount
                 "First name": first_name
-          - operations: DataFrame.fillna
+          - handler: DataFrame.fillna
             options:
               value: ""
           - handler: Series.map
@@ -157,6 +155,27 @@ df["slug"] = df["slug"].map(lambda x: normality.slugify(x) if isinstance(x) else
 
 Refer to the [runpandarun documentation](https://github.com/simonwoerpel/runpandarun) for more.
 
+#### Apply data patches
+
+[runpandarun](https://github.com/simonwoerpel/runpandarun) ships with [datapatch](https://github.com/pudo/datapatch) integrated, so you can apply data patches *after* the pandas operations are applied:
+
+```yaml
+extract:
+  sources:
+    - uri: ./data.csv
+      pandas:
+        read:
+          options:
+            skiprows: 3
+        operations:
+          - handler: DataFrame.fillna
+            options:
+              value: ""
+        patch:
+          countries:
+            - match: "Greet Britain"
+              value: "Great Britain"
+```
 
 #### Named source
 
