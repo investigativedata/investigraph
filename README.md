@@ -41,7 +41,9 @@ For most common data source formats, this process is possible without programmin
 - [ftmstore-fastapi](https://github.com/investigativedata/ftmstore-fastapi) - Lightweight API that exposes a ftm store to a public endpoint. Will be improved during this project.
 
 ## 3rd party contributions
-This project builds on top of great technology. Contributions to 3rd party libraries are listet below.
+This project builds on top of great technology. Contributions to 3rd party libraries are listed below.
+- [nomenklatura sql store](https://github.com/opensanctions/nomenklatura/pull/125)
+- [nomenklatura dataset model](https://github.com/opensanctions/nomenklatura/pull/109)
 
 ### nomenklatura
 - [Add optional dataset category and frequency metadata](https://github.com/opensanctions/nomenklatura/commit/ca6eab89c0a468f4dcb8b79045a7ccb9625787bd)
