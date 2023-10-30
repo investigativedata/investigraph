@@ -11,7 +11,7 @@ The entrypoint function must yield dictionaries that will be passed as records t
 ```yaml
 extract:
   sources:
-    - url: https://example.com/data.csv
+    - uri: https://example.com/data.csv
   handler: ./extract.py:handle
 ```
 
@@ -36,7 +36,7 @@ def handle(ctx: Context, res: Resolver) -> Generator[dict[str, Any], None, None]
 ```yaml
 extract:
   sources:
-    - url: https://example.com/data.csv
+    - uri: https://example.com/data.csv
   handler: ./extract.py:handle
   fetch: false
 ```
@@ -50,7 +50,7 @@ from typing import Any, Generator
 from investigraph.model import Context
 
 def handle(ctx: Context) -> Generator[dict[str, Any], None, None]:
-    res = requests.get(ctx.source.uri)
+    res = requests.get(ctx.sources.uri)
     for record in res.json():
         yield record["item"]
 ```
