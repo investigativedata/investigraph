@@ -11,7 +11,7 @@ The entrypoint function must yield dictionaries that will be passed as records t
 ```yaml
 extract:
   sources:
-    - url: https://example.com/data.csv
+    - uri: https://example.com/data.csv
   handler: ./extract.py:handle
 ```
 
@@ -36,7 +36,7 @@ def handle(ctx: Context, res: Resolver) -> Generator[dict[str, Any], None, None]
 ```yaml
 extract:
   sources:
-    - url: https://example.com/data.csv
+    - uri: https://example.com/data.csv
   handler: ./extract.py:handle
   fetch: false
 ```
