@@ -307,8 +307,7 @@ An actual `transform.py` for the `gdho` dataset could look like this:
 
 ```python
 def parse(ctx, record, ix):
-    proxy = ctx.make_proxy("Organization")
-    proxy.id = record.pop("Id"))
+    proxy = ctx.make_proxy("Organization", record.pop("Id"))  # schema, id
     proxy.add("name", record.pop("Name"))
     # add more property data ...
     yield proxy
